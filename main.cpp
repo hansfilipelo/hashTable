@@ -15,6 +15,7 @@ int main(){
     table.put("Erik","Core i7 920@extraGay");
     table.put("Hans-Filip", "Core i5 4288U");
     table.put("David","Core i3 2370M");
+    table.put("Erhl","Celeron J1900");
     
     string input;
     

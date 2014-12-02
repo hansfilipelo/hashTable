@@ -94,24 +94,26 @@ void Hash::remove(string name){
     
     item* node = hashTable.at(index);
     
-    if (node->name == name && node->next != nullptr) {
-        hashTable.at(index) = node->next;
-        hashTable.at(index)->parent = nullptr;
-    }
-    else if (node->name == name){
-        hashTable.at(index) = nullptr;
-    }
-    else{
-        while (node->next != nullptr) {
-            if (node->name == name) {
-                node->next->parent = node->parent;
-            }
-            node = node->next;
+    if (node != nullptr) {
+        if (node->name == name && node->next != nullptr) {
+            hashTable.at(index) = node->next;
+            hashTable.at(index)->parent = nullptr;
         }
-    }
-    
-    if (node->name == name) {
-        delete node;
+        else if (node->name == name){
+            hashTable.at(index) = nullptr;
+        }
+        else{
+            while (node->next != nullptr) {
+                if (node->name == name) {
+                    node->next->parent = node->parent;
+                }
+                node = node->next;
+            }
+        }
+        
+        if (node->name == name) {
+            delete node;
+        }
     }
 }
 
