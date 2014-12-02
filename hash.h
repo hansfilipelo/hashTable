@@ -9,6 +9,7 @@ public:
     int hash(std::string key);
     void put(std::string inName, std::string inCPU);
     std::string get(std::string name);
+    void remove(std::string name);
     
 protected:
     int tableSize;
@@ -17,6 +18,7 @@ protected:
         std::string name;
         std::string cpu;
         item* next = nullptr;
+        item* parent = nullptr;
     };
     
     std::vector<item*> hashTable;

@@ -49,6 +49,7 @@ void Hash::put(string inName, string inCPU){
         current->next = new item;
         current->next->name = inName;
         current->next->cpu = inCPU;
+        current->next->parent = current;
     }
 }
 
@@ -60,19 +61,58 @@ string Hash::get(string name){
     
     item* node = hashTable.at(index);
     
-    while (node->next != nullptr) {
-        if (node->name == name) {
-            break;
+    if (node != nullptr) {
+        
+        while (node->next != nullptr) {
+            if (node->name == name) {
+                break;
+            }
+            node = node->next;
         }
-        node = node->next;
+        
+        if (node->name != name) {
+            string returnString = name;
+            returnString += " not in dictionary.";
+            return returnString;
+        }
+        else{
+            return node->cpu;
+        }
     }
-    
-    if (node->name != name) {
+    else{
         string returnString = name;
         returnString += " not in dictionary.";
         return returnString;
     }
+}
+
+// -----------------
+
+void Hash::remove(string name){
+    
+    int index = this->hash(name);
+    
+    item* node = hashTable.at(index);
+    
+    if (node->name == name && node->next != nullptr) {
+        hashTable.at(index) = node->next;
+        hashTable.at(index)->parent = nullptr;
+    }
+    else if (node->name == name){
+        hashTable.at(index) = nullptr;
+    }
     else{
-        return node->cpu;
+        while (node->next != nullptr) {
+            if (node->name == name) {
+                node->next->parent = node->parent;
+            }
+            node = node->next;
+        }
+    }
+    
+    if (node->name == name) {
+        delete node;
     }
 }
+
+
