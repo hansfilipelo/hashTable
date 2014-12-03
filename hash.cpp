@@ -2,119 +2,80 @@
 
 using namespace std;
 
-// ---- Constructor -----
-
-Hash::Hash(int startSize){
-    tableSize = startSize;
+Hash::Hash(int size){
+    tableSize = size;
     
     for (int i = 0; i < tableSize; i++) {
-        hashTable.push_back(nullptr);
+        hashTable.push_back(new vector<pair<string,string>*>);
     }
 }
 
-// -----------------
+// ----------------------
 
 int Hash::hash(string key){
     
     int hashVal = 0;
-    int index;
     
-    for (unsigned long int i = 0; i < key.size(); i++) {
+    for (int i = 0; i < key.size(); i++) {
         hashVal += (int)key.at(i);
     }
     
-    index = hashVal % tableSize;
-    
-    return index;
+    return hashVal % tableSize;
 }
 
-// ----------------
+// ----------------------
 
-void Hash::put(string inName, string inCPU){
+void Hash::put(string key, string value){
     
-    int index = this->hash(inName);
+    vector<pair<string,string>*>* bucket = hashTable.at(this->hash(key));
     
-    if (hashTable.at(index) == nullptr) {
-        hashTable.at(index) = new item;
-        hashTable.at(index)->name = inName;
-        hashTable.at(index)->cpu = inCPU;
-    }
-    else{
-        item* current = hashTable.at(index);
-        
-        while (current->next != nullptr) {
-            current = current->next;
-        }
-        
-        current->next = new item;
-        current->next->name = inName;
-        current->next->cpu = inCPU;
-        current->next->parent = current;
-    }
+    
+    bucket->push_back(new pair<string,string>);
+    bucket->back()->first = key;
+    bucket->back()->second = value;
 }
 
-// ------------------
+// -----------------------
 
-string Hash::get(string name){
+string Hash::get(string key){
     
-    int index = this->hash(name);
+    vector<pair<string,string>*>* bucket = hashTable.at(this->hash(key));
     
-    item* node = hashTable.at(index);
-    
-    if (node != nullptr) {
-        
-        while (node->next != nullptr) {
-            if (node->name == name) {
-                break;
-            }
-            node = node->next;
-        }
-        
-        if (node->name != name) {
-            string returnString = name;
-            returnString += " not in dictionary.";
-            return returnString;
-        }
-        else{
-            return node->cpu;
-        }
+    int i = 0;
+    while (i < bucket->size() && bucket->at(i)->first != key) {
+        i++;
     }
-    else{
-        string returnString = name;
-        returnString += " not in dictionary.";
+    
+    if ( i >= bucket->size() ) {
+        string returnString = "No entry for key ";
+        returnString += key;
         return returnString;
     }
-}
-
-// -----------------
-
-void Hash::remove(string name){
-    
-    int index = this->hash(name);
-    
-    item* node = hashTable.at(index);
-    
-    if (node != nullptr) {
-        if (node->name == name && node->next != nullptr) {
-            hashTable.at(index) = node->next;
-            hashTable.at(index)->parent = nullptr;
-        }
-        else if (node->name == name){
-            hashTable.at(index) = nullptr;
-        }
-        else{
-            while (node->next != nullptr) {
-                if (node->name == name) {
-                    node->next->parent = node->parent;
-                }
-                node = node->next;
-            }
-        }
-        
-        if (node->name == name) {
-            delete node;
-        }
+    else{
+        return bucket->at(i)->second;
     }
 }
+
+// ------------------------
+
+void Hash::remove(string key){
+    
+    vector<pair<string,string>*>* bucket = hashTable.at(this->hash(key));
+    
+    int i = 0;
+    while (i < bucket->size() && bucket->at(i)->first != key) {
+        i++;
+    }
+    
+    if ( i >= bucket->size() ) {
+        return;
+    }
+    else{
+        delete bucket->at(i);
+        bucket->erase(bucket->begin()+i);
+    }
+}
+
+
 
 

@@ -1,25 +1,24 @@
-#include <stdlib.h>
+#ifndef hash_h
+#define hash_h
+
 #include <string>
-#include <iostream>
 #include <vector>
+#include <utility>
+
 
 class Hash{
 public:
-    Hash(int);
+    Hash(int size = 100);
     int hash(std::string key);
-    void put(std::string inName, std::string inCPU);
-    std::string get(std::string name);
-    void remove(std::string name);
+    void put(std::string key, std::string value);
+    std::string get(std::string key);
+    void remove(std::string key);
     
 protected:
+    std::vector<std::vector<std::pair<std::string,std::string>*>*> hashTable;
     int tableSize;
-    
-    struct item{
-        std::string name;
-        std::string cpu;
-        item* next = nullptr;
-        item* parent = nullptr;
-    };
-    
-    std::vector<item*> hashTable;
 };
+
+
+
+#endif
