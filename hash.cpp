@@ -29,10 +29,19 @@ void Hash::put(string key, string value){
     
     vector<pair<string,string>*>* bucket = hashTable.at(this->hash(key));
     
+    int i = 0;
+    while (i < bucket->size() && bucket->at(i)->first != key) {
+        i++;
+    }
     
-    bucket->push_back(new pair<string,string>);
-    bucket->back()->first = key;
-    bucket->back()->second = value;
+    if (i >= bucket->size() ) {
+        bucket->push_back(new pair<string,string>);
+        bucket->back()->first = key;
+        bucket->back()->second = value;
+    }
+    else{
+        bucket->at(i)->second = value;
+    }
 }
 
 // -----------------------
@@ -75,6 +84,13 @@ void Hash::remove(string key){
         bucket->erase(bucket->begin()+i);
     }
 }
+
+
+
+
+
+
+
 
 
 
